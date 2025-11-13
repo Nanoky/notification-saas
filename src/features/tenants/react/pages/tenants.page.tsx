@@ -20,7 +20,7 @@ export function TenantsPage() {
         },
     });
 
-    const { tenants, search } = useTenants()
+    const { tenants, search, handleAddTenant, selectTenant } = useTenants()
 
     const handleSearchTenants = (data: z.infer<typeof schema>) => {
         search(data)
@@ -35,12 +35,12 @@ export function TenantsPage() {
                         <Input {...form.register("name")} placeholder="Search tenants" />
                     </Field>
                 </form>
-                <Button>Add Tenant</Button>
+                <Button onClick={handleAddTenant}>Add Tenant</Button>
             </div>
             <div className="grid grid-cols-4 gap-4">
                 {
                     tenants.map(tenant => (
-                        <Card>
+                        <Card key={tenant.id} onClick={() => selectTenant(tenant)}>
                             <CardContent>
                                 <div>{tenant.name}</div>
                             </CardContent>

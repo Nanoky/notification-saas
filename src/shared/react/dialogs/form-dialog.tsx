@@ -46,65 +46,63 @@ export function FormDialog({
         defaultValues,
     });
 
-    const handleClose = (result: Record<string, any> | null) => {
+    const handleClose = (result: z.infer<typeof schema> | null) => {
         setOpen(false);
         setTimeout(() => onClose(result), 150);
     };
 
-    const onSubmit = async (data: Record<string, any>) => {
+    const onSubmit = async (data: z.infer<typeof schema>) => {
         handleClose(data);
     };
 
     return (
         <Dialog open={open} onOpenChange={(open) => !open && handleClose(null)}>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>{title}</DialogTitle>
-                        {description && <DialogDescription>{description}</DialogDescription>}
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                        {fields.map((field) => (
-                            <Field key={field.name} className="space-y-2">
-                                <FieldLabel htmlFor={field.name}>{field.label}</FieldLabel>
-                                {field.type === 'textarea' ? (
-                                    <Textarea
-                                        id={field.name}
-                                        {...register(field.name)}
-                                        placeholder={field.placeholder}
-                                        className={errors[field.name] ? 'border-red-500' : ''}
-                                    />
-                                ) : (
-                                    <Input
-                                        id={field.name}
-                                        type={field.type || 'text'}
-                                        {...register(field.name)}
-                                        placeholder={field.placeholder}
-                                        className={errors[field.name] ? 'border-red-500' : ''}
-                                    />
-                                )}
-                                {field.description && !errors[field.name] && (
-                                    <FieldDescription className="text-sm text-slate-500">
-                                        {field.description}
-                                    </FieldDescription>
-                                )}
-                                {errors[field.name] && (
-                                    <FieldError>{errors[field.name]?.message as string}</FieldError>
-                                )}
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{title}</DialogTitle>
+                    {description && <DialogDescription>{description}</DialogDescription>}
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                    {fields.map((field) => (
+                        <Field key={field.name}>
+                            <FieldLabel htmlFor={field.name}>{field.label}</FieldLabel>
+                            {field.type === 'textarea' ? (
+                                <Textarea
+                                    id={field.name}
+                                    {...register(field.name)}
+                                    placeholder={field.placeholder}
+                                    className={errors[field.name] ? 'border-red-500' : ''}
+                                />
+                            ) : (
+                                <Input
+                                    id={field.name}
+                                    type={field.type || 'text'}
+                                    {...register(field.name)}
+                                    placeholder={field.placeholder}
+                                    className={errors[field.name] ? 'border-red-500' : ''}
+                                />
+                            )}
+                            {field.description && !errors[field.name] && (
+                                <FieldDescription className="text-sm text-slate-500">
+                                    {field.description}
+                                </FieldDescription>
+                            )}
+                            {errors[field.name] && (
+                                <FieldError>{errors[field.name]?.message as string}</FieldError>
+                            )}
 
-                            </Field>
-                        ))}
-                    </div>
-                    <DialogFooter>
-                        <Button type="button" variant="outline" onClick={() => handleClose(null)}>
-                            {cancelText}
-                        </Button>
-                        <Button type="submit" disabled={isSubmitting}>
-                            {isSubmitting ? 'Submitting...' : confirmText}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </form>
+                        </Field>
+                    ))}
+                </div>
+                <DialogFooter>
+                    <Button type="button" variant="outline" onClick={() => handleClose(null)}>
+                        {cancelText}
+                    </Button>
+                    <Button type="button" onClick={handleSubmit(onSubmit)} className="ml-2" disabled={isSubmitting}>
+                        {isSubmitting ? 'Submitting...' : confirmText}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
         </Dialog>
     );
 }

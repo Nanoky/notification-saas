@@ -6,6 +6,8 @@ import { store } from './redux/store.ts';
 import { AppModule } from './app.module.ts';
 import { routeTree } from './routeTree.gen.ts';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { Provider } from 'react-redux';
+import { DialogProvider } from './shared/react/dialogs/register.tsx';
 
 persistStore(store);
 
@@ -28,6 +30,10 @@ declare module '@tanstack/react-router' {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <DialogProvider>
+        <RouterProvider router={router} />
+      </DialogProvider>
+    </Provider>
   </StrictMode>,
 )
